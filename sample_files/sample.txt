@@ -1,0 +1,19 @@
+Data Structures and Algorithms (DSA) — Mini-Project
+Title: Huffman Coding-Based Lossless File Compression System
+Student Name: Shalom Dabre
+Roll Number: 11070
+Course: Computer Engineering
+
+Huffman coding is an entropy encoding algorithm developed by David A. Huffman in 1952.
+It represents an optimal prefix-free binary coding scheme used for lossless data compression.
+
+Key Principles:
+1. Frequency Analysis: Characters that occur frequently in the input data are assigned shorter bit codes.
+2. Binary Min-Heap: A priority queue is utilized to repeatedly extract the two nodes with the lowest frequencies.
+3. Binary Tree Construction: Extracted nodes are merged as child nodes under a newly created parent internal node.
+4. Prefix Property: No code is a prefix of another code, ensuring unambiguous bitstream decoding.
+5. Bit Packing: Variable-length binary codes are packed into 8-bit bytes (MSB to LSB).
+
+Lossless Property:
+The decompression engine restores the original byte stream byte-for-byte without losing any data.
+Integrity is guaranteed through 32-bit Cyclic Redundancy Check (CRC-32) verification.
