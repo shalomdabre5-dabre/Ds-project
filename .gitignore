@@ -1,0 +1,27 @@
+# Binaries and executables
+*.exe
+*.o
+*.obj
+*.dll
+*.so
+*.dylib
+
+# Test runner output
+test_runner
+tests/test_runner.exe
+tests/test_cases/*.huf
+tests/test_cases/*.restored
+
+# Output test files
+output/*
+!output/.gitkeep
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# IDE and OS files
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
