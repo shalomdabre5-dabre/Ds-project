@@ -62,7 +62,11 @@ void free_huffman_tree(HuffmanNode *root) {
     free(root);
 }
 
-HuffmanNode* build_huffman_tree(const uint64_t frequencies[256]) {
+HuffmanNode* build_huffman_tree_with_trace(const uint64_t frequencies[256], HuffmanTrace *trace) {
+    if (trace) {
+        trace->count = 0;
+    }
+
     if (!frequencies) {
         return NULL;
     }
@@ -85,6 +89,16 @@ HuffmanNode* build_huffman_tree(const uint64_t frequencies[256]) {
             if (frequencies[i] > 0) {
                 HuffmanNode *leaf = create_leaf_node((unsigned char)i, frequencies[i], 0);
                 HuffmanNode *root = create_internal_node(leaf, NULL, 1);
+                if (trace && trace->count < 256) {
+                    HuffmanMergeStep *step = &trace->steps[trace->count++];
+                    step->is_leaf_left = 1;
+                    step->data_left = (unsigned char)i;
+                    step->freq_left = frequencies[i];
+                    step->is_leaf_right = 0;
+                    step->data_right = 0;
+                    step->freq_right = 0;
+                    step->parent_freq = frequencies[i];
+                }
                 return root;
             }
         }
@@ -112,6 +126,17 @@ HuffmanNode* build_huffman_tree(const uint64_t frequencies[256]) {
         HuffmanNode *left = extract_min(heap);
         HuffmanNode *right = extract_min(heap);
 
+        if (trace && trace->count < 256) {
+            HuffmanMergeStep *step = &trace->steps[trace->count++];
+            step->is_leaf_left = left ? left->is_leaf : 0;
+            step->data_left = left ? left->data : 0;
+            step->freq_left = left ? left->freq : 0;
+            step->is_leaf_right = right ? right->is_leaf : 0;
+            step->data_right = right ? right->data : 0;
+            step->freq_right = right ? right->freq : 0;
+            step->parent_freq = (left ? left->freq : 0) + (right ? right->freq : 0);
+        }
+
         HuffmanNode *parent = create_internal_node(left, right, order++);
         if (!parent || !insert_min_heap(heap, parent)) {
             if (left) free_huffman_tree(left);
@@ -124,6 +149,10 @@ HuffmanNode* build_huffman_tree(const uint64_t frequencies[256]) {
     HuffmanNode *root = extract_min(heap);
     destroy_min_heap(heap);
     return root;
+}
+
+HuffmanNode* build_huffman_tree(const uint64_t frequencies[256]) {
+    return build_huffman_tree_with_trace(frequencies, NULL);
 }
 
 static void generate_codes_recursive(const HuffmanNode *node, char *buffer, int depth, HuffmanCodeTable *table) {
